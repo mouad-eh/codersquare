@@ -12,7 +12,7 @@ export interface Post {
     title: string;
     url: string;
     userId: string;
-    postedAt: string;
+    postedAt: number;
 }
 
 export interface Like{

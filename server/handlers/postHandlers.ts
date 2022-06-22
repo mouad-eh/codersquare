@@ -1,25 +1,20 @@
-import { RequestHandler } from "express";
-import {db} from "../datastore/index"
+import { db } from "../datastore/index"
 import { Post } from "../types";
 import crypto from 'crypto';
+import { ExpressHandler } from '../types'
+import { listPostsRequest, listPostsResponse, createPostRequest, createPostResponse } from '../api'
 
-export type ExpressHandler <req,res> = RequestHandler<
-string,
-Partial<res>,
-Partial<req>,
-any
->
-
-export const listPostsHandler: ExpressHandler<{},{}> = (req, res) => {
+export const listPostsHandler: ExpressHandler<listPostsRequest, listPostsResponse> = (req, res) => {
+    throw Error("Oops there is an error!");
     res.send({ posts: db.listPosts() });
 }
 
-
-type createPostRequest = Pick<Post,"title"|"url"|"userId">
-interface createPostResponse  {}
-
-export const createPostHandler: ExpressHandler<createPostRequest,createPostResponse> = (req, res) => {
-    if( !req.body.title || !req.body.url || !req.body.userId){
+export const createPostHandler: ExpressHandler<createPostRequest, createPostResponse> = (req, res) => {
+    // error handling 
+    if (!req.body.title) {
+        return res.status(400).send("title field missing!")
+    }
+    if (!req.body.title || !req.body.url || !req.body.userId) {
         return res.sendStatus(400);
     }
     const post: Post = {

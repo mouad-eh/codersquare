@@ -1,7 +1,10 @@
 import express, { ErrorRequestHandler, RequestHandler } from 'express';
 import { createPostHandler, listPostsHandler } from './handlers/postHandlers';
 import asyncHandler from "express-async-handler"; // a problem in express solved by this package
+import { initDb } from './datastore';
 
+(async ()=>{
+await initDb();
 const app = express();
 
 const requestLoggerMiddleware: RequestHandler = (req, res, next) => {
@@ -22,4 +25,5 @@ const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
 }
 app.use(errorHandler);
 
-app.listen(3000)
+app.listen(3000);
+})()

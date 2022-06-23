@@ -4,12 +4,15 @@ import crypto from 'crypto';
 import { ExpressHandler } from '../types'
 import { listPostsRequest, listPostsResponse, createPostRequest, createPostResponse } from '../api'
 
-export const listPostsHandler: ExpressHandler<listPostsRequest, listPostsResponse> = (req, res) => {
-    throw Error("Oops there is an error!");
-    res.send({ posts: db.listPosts() });
+export const listPostsHandler: ExpressHandler<listPostsRequest, listPostsResponse> = async (req, res) => {
+    res.send({ posts: await db.listPosts() });
+    // no need for await here because we are dealing with in memory database
+    // but await is important in the case of an error happened in function 
+    // without await the error will not be catched (listPostsHandler will run normaly)
+    // but with await the error will be catched 
 }
 
-export const createPostHandler: ExpressHandler<createPostRequest, createPostResponse> = (req, res) => {
+export const createPostHandler: ExpressHandler<createPostRequest, createPostResponse> = async (req, res) => {
     // error handling 
     if (!req.body.title) {
         return res.status(400).send("title field missing!")
@@ -17,6 +20,7 @@ export const createPostHandler: ExpressHandler<createPostRequest, createPostResp
     if (!req.body.title || !req.body.url || !req.body.userId) {
         return res.sendStatus(400);
     }
+    //TODO: validate user exists
     const post: Post = {
         id: crypto.randomUUID(),
         postedAt: Date.now(),
@@ -24,6 +28,6 @@ export const createPostHandler: ExpressHandler<createPostRequest, createPostResp
         url: req.body.url,
         userId: req.body.userId
     }
-    db.createPost(post);
+    await db.createPost(post);// no need for await here because we are dealing with in memory database
     res.sendStatus(200);
 }

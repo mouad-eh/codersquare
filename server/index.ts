@@ -1,5 +1,6 @@
 import express, { ErrorRequestHandler, RequestHandler } from 'express';
 import { createPostHandler, listPostsHandler } from './handlers/postHandlers';
+import asyncHandler from "express-async-handler"; // a problem in express solved by this package
 
 const app = express();
 
@@ -11,8 +12,8 @@ const requestLoggerMiddleware: RequestHandler = (req, res, next) => {
 app.use(express.json());
 app.use(requestLoggerMiddleware)
 
-app.get("/posts", listPostsHandler)
-app.post("/posts", createPostHandler)
+app.get("/posts", asyncHandler(listPostsHandler))
+app.post("/posts", asyncHandler(createPostHandler))
 
 // middleware handling errors
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {

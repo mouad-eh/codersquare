@@ -31,10 +31,15 @@ export interface Comment {
     postedAt: number;
 }
 
+type WithError<T> =  T & {error: string}; 
 
 export type ExpressHandler<req, res> = RequestHandler<
     string,
-    Partial<res>,
+    Partial<WithError<res>>,
     Partial<req>,
     any
 >
+
+export interface JwtObj {
+    userId: string; // payload type
+}

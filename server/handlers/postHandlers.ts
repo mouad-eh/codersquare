@@ -15,7 +15,7 @@ export const listPostsHandler: ExpressHandler<listPostsRequest, listPostsRespons
 export const createPostHandler: ExpressHandler<createPostRequest, createPostResponse> = async (req, res) => {
     // error handling 
     if (!req.body.title) {
-        return res.status(400).send("title field missing!")
+        return res.status(400).send({error:"title field missing!"})
     }
     if (!req.body.title || !req.body.url || !req.body.userId) {
         return res.sendStatus(400);

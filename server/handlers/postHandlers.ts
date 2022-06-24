@@ -15,9 +15,9 @@ export const listPostsHandler: ExpressHandler<listPostsRequest, listPostsRespons
 export const createPostHandler: ExpressHandler<createPostRequest, createPostResponse> = async (req, res) => {
     // error handling 
     if (!req.body.title) {
-        return res.status(400).send({error:"title field missing!"})
+        return res.status(400).send({ error: "title field missing!" })
     }
-    if (!req.body.title || !req.body.url || !req.body.userId) {
+    if (!req.body.title || !req.body.url) {
         return res.sendStatus(400);
     }
     //TODO: validate user exists
@@ -26,7 +26,7 @@ export const createPostHandler: ExpressHandler<createPostRequest, createPostResp
         postedAt: Date.now(),
         title: req.body.title,
         url: req.body.url,
-        userId: req.body.userId
+        userId: res.locals.userId //req.body.userId
     }
     await db.createPost(post);// no need for await here because we are dealing with in memory database
     res.sendStatus(200);

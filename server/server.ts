@@ -8,27 +8,29 @@ import { errorHandler } from './middleware/errorMiddleWare';
 import dotenv from 'dotenv';
 import { authHandler } from './middleware/authMiddleWare';
 
-(async ()=>{
-await initDb();
+(async () => {
+    await initDb();
 
-dotenv.config();
+    dotenv.config();
 
-const app = express();
+    const app = express();
 
 
-app.use(express.json());
-app.use(requestLoggerMiddleware);
-// public endpoints
-app.post("/signup",asyncHandler(signUpHandler))
-app.post("/signin",asyncHandler(signInHandler))
+    app.use(express.json());
+    app.use(requestLoggerMiddleware);
+    // public endpoints
+    app.get("/healthz", (req, res) => res.send({ status: "Ok" }))
+    // you can do monitoring on this public endpoint to check if the server is up and running
+    app.post("/signup", asyncHandler(signUpHandler))
+    app.post("/signin", asyncHandler(signInHandler))
 
-app.use(authHandler);
+    app.use(authHandler);
 
-// protected endpoints
-app.get("/posts", asyncHandler(listPostsHandler))
-app.post("/posts", asyncHandler(createPostHandler))
+    // protected endpoints
+    app.get("/posts", asyncHandler(listPostsHandler))
+    app.post("/posts", asyncHandler(createPostHandler))
 
-app.use(errorHandler);
+    app.use(errorHandler);
 
-app.listen(3000);
+    app.listen(process.env.PORT || 3000);
 })()

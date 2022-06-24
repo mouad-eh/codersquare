@@ -2,6 +2,7 @@ import express, { ErrorRequestHandler, RequestHandler } from 'express';
 import { createPostHandler, listPostsHandler } from './handlers/postHandlers';
 import asyncHandler from "express-async-handler"; // a problem in express solved by this package
 import { initDb } from './datastore';
+import { signInHandler, signUpHandler } from './handlers/userHandlers';
 
 (async ()=>{
 await initDb();
@@ -17,6 +18,9 @@ app.use(requestLoggerMiddleware)
 
 app.get("/posts", asyncHandler(listPostsHandler))
 app.post("/posts", asyncHandler(createPostHandler))
+
+app.post("/signup",asyncHandler(signUpHandler))
+app.post("/signin",asyncHandler(signInHandler))
 
 // middleware handling errors
 const errorHandler: ErrorRequestHandler = (err, req, res, next) => {
